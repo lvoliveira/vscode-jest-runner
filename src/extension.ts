@@ -9,17 +9,21 @@ export function activate(context: vscode.ExtensionContext) {
   const codeLensProvider = new JestRunnerCodeLensProvider();
   const config = new JestRunnerConfig();
 
-  const runJest = vscode.commands.registerCommand('extension.runJest', async (argument: object | string) => {
+  const runJest = vscode.commands.registerCommand('extension.runJest', async (argument: object | string | {path: string}) => {
     if (typeof argument === 'string') {
       jestRunner.runCurrentTest(argument);
+    } else if('path' in argument) {
+      jestRunner.runTestsOnPath(argument.path)
     } else {
       jestRunner.runCurrentTest();
     }
   });
   const runJestFile = vscode.commands.registerCommand('extension.runJestFile', async () => jestRunner.runCurrentFile());
-  const debugJest = vscode.commands.registerCommand('extension.debugJest', async (argument: object | string) => {
+  const debugJest = vscode.commands.registerCommand('extension.debugJest', async (argument: object | string | {path: string}) => {
     if (typeof argument === 'string') {
       jestRunner.debugCurrentTest(argument)
+    } else if('path' in argument) {
+      jestRunner.debugTestsOnPath(argument.path);
     } else {
       jestRunner.debugCurrentTest()
     }
